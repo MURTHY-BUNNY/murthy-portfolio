@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#130e09">
+
+    <title>Skills | Kothagundla Murthy</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="inner-page">
+
+    <!-- Header and Navigation -->
+    <header class="inner-header">
+
+        <a class="inner-logo" href="index.html">
+            M
+            <span>/ PORTFOLIO</span>
+        </a>
+
+        <button
+            class="inner-menu"
+            id="innerMenuButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="innerNav"
+        >
+            MENU +
+        </button>
+
+        <nav id="innerNav" aria-label="Main navigation" hidden>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="Education.html">Education</a>
+            <a href="Skills.html">Skills</a>
+            <a href="Project.html">Projects</a>
+            <a href="Contact.html">Contact</a>
+        </nav>
+
+    </header>
+
+    <!-- Main Skills Content -->
+    <main class="inner-main">
+
+        <p class="eyebrow">SKILLS / TOOLKIT</p>
+
+        <h1>
+            Skills<span>.</span>
+        </h1>
+
+        <div class="inner-content">
+
+            <!-- Programming and Web Development -->
+            <article>
+
+                <h2>Programming &amp; Web Development</h2>
+
+                <div class="chips">
+                    <span>HTML</span>
+                    <span>CSS</span>
+                    <span>JavaScript</span>
+                    <span>Python</span>
+                    <span>SQL</span>
+                    <span>React</span>
+                    <span>Node.js</span>
+                    <span>MongoDB</span>
+                    <span>Cybersecurity</span>
+                    <span>Git</span>
+                    <span>FastAPI</span>
+                    <span>SQLite</span>
+                </div>
+
+            </article>
+
+            <!-- Development Tools -->
+            <article>
+
+                <h2>Tools</h2>
+
+                <p>
+                    VS Code · PyCharm · Eclipse
+                </p>
+
+            </article>
+
+        </div>
+
+        <!-- Back to Home -->
+        <a class="back-link" href="index.html">
+            ← Back to home
+        </a>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="inner-footer">
+
+        <span>© 2026 Kothagundla Murthy</span>
+
+        <a href="mailto:kothagundlamurthy@gmail.com">
+            kothagundlamurthy@gmail.com ↗
+        </a>
+
+    </footer>
+
+    <!-- Navigation Menu Script -->
+    <script>
+        const menuButton = document.getElementById("innerMenuButton");
+        const innerNav = document.getElementById("innerNav");
+
+        menuButton.addEventListener("click", () => {
+            const isOpen =
+                menuButton.getAttribute("aria-expanded") === "true";
+
+            menuButton.setAttribute("aria-expanded", String(!isOpen));
+            innerNav.hidden = isOpen;
+
+            menuButton.textContent = isOpen ? "MENU +" : "CLOSE −";
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#130e09">
+
+    <title>Education | Kothagundla Murthy</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="inner-page">
+
+    <!-- Header and Navigation -->
+    <header class="inner-header">
+
+        <a class="inner-logo" href="index.html">
+            M
+            <span>/ PORTFOLIO</span>
+        </a>
+
+        <button
+            class="inner-menu"
+            id="innerMenuButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="innerNav"
+        >
+            MENU +
+        </button>
+
+        <nav id="innerNav" aria-label="Main navigation" hidden>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="Education.html">Education</a>
+            <a href="Skills.html">Skills</a>
+            <a href="Project.html">Projects</a>
+            <a href="Contact.html">Contact</a>
+        </nav>
+
+    </header>
+
+    <!-- Main Education Content -->
+    <main class="inner-main">
+
+        <p class="eyebrow">EDUCATION / BACKGROUND</p>
+
+        <h1>
+            Education<span>.</span>
+        </h1>
+
+        <div class="inner-content">
+
+            <!-- Bachelor's Degree -->
+            <article>
+
+                <h2>B.Tech — Computer Science and Engineering</h2>
+
+                <p>KL University · 2022–2026</p>
+
+                <p>CGPA: 8.56</p>
+
+            </article>
+
+            <!-- Intermediate Education -->
+            <article>
+
+                <h2>Intermediate</h2>
+
+                <p>Sri Bhavishya Junior College · 2020–2022</p>
+
+            </article>
+
+            <!-- School Education -->
+            <article>
+
+                <h2>SSC</h2>
+
+                <p>Kennedy English Medium School · 2020</p>
+
+            </article>
+
+        </div>
+
+        <!-- Back to Home -->
+        <a class="back-link" href="index.html">
+            ← Back to home
+        </a>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="inner-footer">
+
+        <span>© 2026 Kothagundla Murthy</span>
+
+        <a href="mailto:kothagundlamurthy@gmail.com">
+            kothagundlamurthy@gmail.com ↗
+        </a>
+
+    </footer>
+
+    <!-- Navigation Menu Script -->
+    <script>
+        const menuButton = document.getElementById("innerMenuButton");
+        const innerNav = document.getElementById("innerNav");
+
+        menuButton.addEventListener("click", () => {
+            const isOpen =
+                menuButton.getAttribute("aria-expanded") === "true";
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                String(!isOpen)
+            );
+
+            innerNav.hidden = isOpen;
+
+            menuButton.textContent = isOpen
+                ? "MENU +"
+                : "CLOSE −";
+        });
+    </script>
+
+</body> 
+</html>

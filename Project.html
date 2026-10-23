@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#130e09">
+
+    <title>Projects | Kothagundla Murthy</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="inner-page">
+
+    <!-- Header and Navigation -->
+    <header class="inner-header">
+
+        <a class="inner-logo" href="index.html">
+            M
+            <span>/ PORTFOLIO</span>
+        </a>
+
+        <button
+            class="inner-menu"
+            id="innerMenuButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="innerNav"
+        >
+            MENU +
+        </button>
+
+        <nav id="innerNav" aria-label="Main navigation" hidden>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="Education.html">Education</a>
+            <a href="Skills.html">Skills</a>
+            <a href="Project.html">Projects</a>
+            <a href="Contact.html">Contact</a>
+        </nav>
+
+    </header>
+
+    <!-- Main Projects Content -->
+    <main class="inner-main">
+
+        <p class="eyebrow">PROJECTS / SELECTED WORK</p>
+
+        <h1>
+            Projects<span>.</span>
+        </h1>
+
+        <div class="inner-content">
+
+            <!-- Project 1: Daily Expense Tracker -->
+            <article>
+
+                <span class="eyebrow">
+                    01 / PYTHON · FASTAPI · SQLITE · REACT
+                </span>
+
+                <h2>Daily Expense Tracker</h2>
+
+                <p>
+                    An expense management application with expense tracking,
+                    category filtering, total spending, and monthly reports.
+                </p>
+
+            </article>
+
+            <!-- Project 2: Student Course Management System -->
+            <article>
+
+                <span class="eyebrow">
+                    02 / MERN STACK
+                </span>
+
+                <h2>Student Course Management System</h2>
+
+                <p>
+                    An academic web application for managing student
+                    and course information.
+                </p>
+
+            </article>
+
+            <!-- Project 3: Art Gallery Web Application -->
+            <article>
+
+                <span class="eyebrow">
+                    03 / JAVA · ECLIPSE
+                </span>
+
+                <h2>Art Gallery Web Application</h2>
+
+                <p>
+                    A web application for presenting and organizing
+                    art gallery content.
+                </p>
+
+            </article>
+
+            <!-- Project 4: Engineering Capstone -->
+            <article>
+
+                <span class="eyebrow">
+                    04 / FINAL-YEAR ACADEMIC PROJECT
+                </span>
+
+                <h2>Engineering Capstone Project — Phase 2</h2>
+
+                <p>
+                    Add the final project title, objective, key features,
+                    and technologies used when those details are available.
+                </p>
+
+            </article>
+
+        </div>
+
+        <!-- Back to Home -->
+        <a class="back-link" href="index.html">
+            ← Back to home
+        </a>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="inner-footer">
+
+        <span>© 2026 Kothagundla Murthy</span>
+
+        <a href="mailto:kothagundlamurthy@gmail.com">
+            kothagundlamurthy@gmail.com ↗
+        </a>
+
+    </footer>
+
+    <!-- Navigation Menu Script -->
+    <script>
+        const menuButton = document.getElementById("innerMenuButton");
+        const innerNav = document.getElementById("innerNav");
+
+        menuButton.addEventListener("click", () => {
+            const isOpen =
+                menuButton.getAttribute("aria-expanded") === "true";
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                String(!isOpen)
+            );
+
+            innerNav.hidden = isOpen;
+
+            menuButton.textContent = isOpen
+                ? "MENU +"
+                : "CLOSE −";
+        });
+    </script>
+
+</body>
+</html>
