@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact Form Integration Example</title>
+  <style>
+    body { font: 16px/1.5 Arial, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    label { display: block; margin-top: 14px; font-weight: 600; }
+    input, textarea { box-sizing: border-box; width: 100%; padding: 10px; margin-top: 4px; }
+    textarea { min-height: 130px; }
+    button { margin-top: 16px; padding: 10px 18px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Contact Murthy</h1>
+  <p>This is a standalone test form. Adapt the field names and script to your existing Contact.html.</p>
+  <form id="contact-form">
+    <label for="name">Name</label>
+    <input id="name" name="name" minlength="2" maxlength="100" required>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required>
+    <label for="subject">Subject</label>
+    <input id="subject" name="subject" minlength="2" maxlength="150" required>
+    <label for="message">Message</label>
+    <textarea id="message" name="message" minlength="10" maxlength="5000" required></textarea>
+    <button type="submit">Send message</button>
+  </form>
+  <p id="form-status" role="status" aria-live="polite"></p>
+  <script src="contact-form.js"></script>
+</body>
+</html>
