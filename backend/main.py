@@ -1,6 +1,6 @@
 """
 Murthy Portfolio Backend
-FastAPI + SQLite contact form API.
+FastAPI + SQLite/PostgreSQL contact form API.
 Run from this folder: uvicorn main:app --reload
 """
 import os
@@ -12,11 +12,16 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+import psycopg
+from psycopg.rows import dict_row
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 DB_PATH = Path(os.getenv("DATABASE_PATH", str(BASE_DIR / "portfolio.db")))
+DATABASE_URL = os.getenv("DATABASE_URL")
+USE_POSTGRES = bool(DATABASE_URL)
+DATABASE_ERRORS = (sqlite3.Error, psycopg.Error)
 
 app = FastAPI(
     title="Murthy Portfolio API",
@@ -46,24 +51,36 @@ app.add_middleware(
 
 
 def get_connection():
+    if USE_POSTGRES:
+        return psycopg.connect(DATABASE_URL, row_factory=dict_row, connect_timeout=10)
+
     connection = sqlite3.connect(DB_PATH, timeout=10)
     connection.row_factory = sqlite3.Row
     return connection
 
 
 def initialize_database():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if not USE_POSTGRES:
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
     with closing(get_connection()) as conn:
-        conn.execute("""
+        id_type = (
+            "BIGSERIAL PRIMARY KEY"
+            if USE_POSTGRES
+            else "INTEGER PRIMARY KEY AUTOINCREMENT"
+        )
+        conn.execute(
+            f"""
             CREATE TABLE IF NOT EXISTS contact_messages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 name TEXT NOT NULL,
                 email TEXT NOT NULL,
                 subject TEXT NOT NULL,
                 message TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )
-        """)
+            """
+        )
         conn.commit()
 
 
@@ -97,7 +114,7 @@ def api_health():
     try:
         initialize_database()
         return {"status": "ok", "database": "connected"}
-    except sqlite3.Error as exc:
+    except DATABASE_ERRORS as exc:
         raise HTTPException(status_code=500, detail="Database unavailable.") from exc
 
 
@@ -106,12 +123,17 @@ def create_contact_message(payload: ContactMessage):
     try:
         initialize_database()
         with closing(get_connection()) as conn:
-            cursor = conn.execute(
-                """
+            placeholders = "%s, %s, %s, %s, %s" if USE_POSTGRES else "?, ?, ?, ?, ?"
+            insert_sql = f"""
                 INSERT INTO contact_messages
                     (name, email, subject, message, created_at)
-                VALUES (?, ?, ?, ?, ?)
-                """,
+                VALUES ({placeholders})
+            """
+            if USE_POSTGRES:
+                insert_sql += " RETURNING id"
+
+            cursor = conn.execute(
+                insert_sql,
                 (
                     payload.name,
                     str(payload.email),
@@ -121,8 +143,8 @@ def create_contact_message(payload: ContactMessage):
                 ),
             )
             conn.commit()
-            message_id = cursor.lastrowid
-    except sqlite3.Error as exc:
+            message_id = cursor.fetchone()["id"] if USE_POSTGRES else cursor.lastrowid
+    except DATABASE_ERRORS as exc:
         raise HTTPException(
             status_code=500,
             detail="The message could not be saved. Please try again later.",

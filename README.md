@@ -49,11 +49,20 @@ The existing `Contact.html` is connected to the API. Start the backend and front
 
 On deployment, set the form's `data-api-base` attribute in `Contact.html` to the backend's HTTPS URL, or update the default `API_BASE` in `frontend-integration/contact-form.js`. Configure `FRONTEND_ORIGINS` on the backend with the frontend's exact origin.
 
-## 4. Deployment reality check
+## 4. Deploy the backend to Render
 
-GitHub Pages only hosts static HTML/CSS/JS. It does not run FastAPI. Deploy this backend folder to a Python-capable host and configure its `FRONTEND_ORIGINS` environment variable with the frontend origin, e.g. `https://murthy-bunny.github.io`.
+The root `render.yaml` defines a FastAPI web service and PostgreSQL database. To deploy:
 
-SQLite is suitable for local learning. On a backend host, the filesystem may be temporary; configure a persistent disk and set `DATABASE_PATH`, or use managed PostgreSQL. A successful local test does not mean the API is already live.
+1. Sign in to Render and open the [new Blueprint page](https://dashboard.render.com/blueprints).
+2. Connect `MURTHY-BUNNY/murthy-portfolio`, select `main`, and apply the Blueprint.
+3. Wait for the web service and database to become available. Render assigns the API an `onrender.com` URL.
+4. Put that URL in the `data-api-base` attribute on the form in `Contact.html`, then commit and push. The live form will then send messages to the deployed API.
+
+This Blueprint uses Render's **free** web and PostgreSQL plans. Free web services can sleep when idle, so the first request can take about a minute. Render's free PostgreSQL database expires after 30 days; back up or upgrade the database before it expires if you need to keep submissions. No hosted service can be created from GitHub Pages alone; you must authorize Render and apply the Blueprint in your account.
+
+GitHub Pages hosts only the static HTML/CSS/JS frontend; it does not run FastAPI. `DATABASE_URL` selects PostgreSQL in the deployed service; local development continues to use SQLite unless you set `DATABASE_URL`.
+
+The deployment URL is not available until the Blueprint has been created in your Render account. Until the frontend is configured with that URL, the contact form will show the email fallback rather than claim a message was delivered.
 
 ## Security notes
 
