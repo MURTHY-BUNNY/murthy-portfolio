@@ -1,10 +1,4 @@
-/*
-Integration helper for your existing Contact.html.
-1. Give your contact form id="contact-form".
-2. Form controls must have name="name", "email", "subject", and "message".
-3. Add <p id="form-status" role="status" aria-live="polite"></p> under the form.
-4. Change API_BASE to your deployed backend URL after hosting it.
-*/
+const CONTACT_EMAIL = "kothagundlamurthy@gmail.com";
 const contactForm = document.querySelector("#contact-form");
 const formStatus = document.querySelector("#form-status");
 const isLocalDevelopment =
@@ -14,18 +8,34 @@ const API_BASE =
   contactForm?.dataset.apiBase?.trim() ||
   (isLocalDevelopment ? "http://127.0.0.1:8000" : "");
 
+function showEmailFallback(payload, reason) {
+  if (!formStatus) return;
+
+  const emailBody = [
+    `Name: ${payload.name}`,
+    `Email: ${payload.email}`,
+    "",
+    payload.message,
+  ].join("\n");
+  const mailto = new URL(`mailto:${CONTACT_EMAIL}`);
+  mailto.searchParams.set("subject", `Portfolio contact: ${payload.subject}`);
+  mailto.searchParams.set("body", emailBody);
+
+  const emailLink = document.createElement("a");
+  emailLink.href = mailto.toString();
+  emailLink.textContent = "Open your email app";
+
+  formStatus.replaceChildren(
+    document.createTextNode(`${reason} `),
+    emailLink,
+    document.createTextNode(` to send your message to ${CONTACT_EMAIL}.`)
+  );
+}
+
 if (contactForm) {
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitButton = contactForm.querySelector('button[type="submit"]');
-
-    if (!API_BASE) {
-      if (formStatus) {
-        formStatus.textContent =
-          "The online message service is not configured yet. Please email kothagundlamurthy@gmail.com instead.";
-      }
-      return;
-    }
 
     const formData = new FormData(contactForm);
     const payload = {
@@ -34,6 +44,14 @@ if (contactForm) {
       subject: String(formData.get("subject") || "").trim(),
       message: String(formData.get("message") || "").trim(),
     };
+
+    if (!API_BASE) {
+      showEmailFallback(
+        payload,
+        "The online message service is not configured. Your message has not been sent."
+      );
+      return;
+    }
 
     if (formStatus) {
       formStatus.textContent = "Sending message...";
@@ -64,9 +82,10 @@ if (contactForm) {
         const message = error instanceof Error
           ? error.message
           : "Unable to send your message.";
-        formStatus.textContent = isLocalDevelopment
-          ? `${message} Check that FastAPI is running locally.`
-          : `${message} Please email kothagundlamurthy@gmail.com if the problem continues.`;
+        const reason = isLocalDevelopment
+          ? `${message} Your message has not been sent.`
+          : "Could not reach the online message service. Your message has not been sent.";
+        showEmailFallback(payload, reason);
       }
     } finally {
       if (submitButton) submitButton.disabled = false;
