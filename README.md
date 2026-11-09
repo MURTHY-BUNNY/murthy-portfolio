@@ -55,8 +55,8 @@ The root `render.yaml` defines a FastAPI web service and PostgreSQL database. To
 
 1. Sign in to Render and open the [new Blueprint page](https://dashboard.render.com/blueprints).
 2. Connect `MURTHY-BUNNY/murthy-portfolio`, select `main`, and apply the Blueprint.
-3. Wait for the web service and database to become available. Render assigns the API an `onrender.com` URL.
-4. Put that URL in the `data-api-base` attribute on the form in `Contact.html`, then commit and push. The live form will then send messages to the deployed API.
+3. Wait for the web service and database to become available. The API URL is `https://murthy-portfolio-contact-api.onrender.com`.
+4. The Contact page is configured to submit to this API.
 
 This Blueprint uses Render's **free** web and PostgreSQL plans. Free web services can sleep when idle, so the first request can take about a minute. Render's free PostgreSQL database expires after 30 days; back up or upgrade the database before it expires if you need to keep submissions. No hosted service can be created from GitHub Pages alone; you must authorize Render and apply the Blueprint in your account.
 
