@@ -11,9 +11,11 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 DB_PATH = Path(os.getenv("DATABASE_PATH", str(BASE_DIR / "portfolio.db")))
 
 app = FastAPI(
@@ -102,6 +104,7 @@ def api_health():
 @app.post("/api/contact", status_code=201)
 def create_contact_message(payload: ContactMessage):
     try:
+        initialize_database()
         with closing(get_connection()) as conn:
             cursor = conn.execute(
                 """

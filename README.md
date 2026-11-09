@@ -43,22 +43,13 @@ In `/docs`, open `POST /api/contact` → **Try it out** and use:
 
 Expected result: HTTP `201` and a success message. The database file is created at `backend/portfolio.db` by default.
 
-## 3. Test the sample contact form
+## 3. Use the Contact page form
 
-For a quick local test, open `frontend-integration/contact-form-example.html` using VS Code Live Server. If Live Server uses another port, add that exact origin to `FRONTEND_ORIGINS` in `backend/.env`, then restart Uvicorn.
+The existing `Contact.html` is connected to the API. Start the frontend with VS Code Live Server and submit the form. If Live Server uses another port, add that exact origin to `FRONTEND_ORIGINS` in `backend/.env`, then restart Uvicorn. The standalone `frontend-integration/contact-form-example.html` is also available for testing.
 
-The integration script expects a form with `id="contact-form"` and input names `name`, `email`, `subject`, `message`. Copy/adapt `frontend-integration/contact-form.js` for your existing `Contact.html`; don't replace your portfolio styling with the sample HTML.
+On deployment, set the form's `data-api-base` attribute in `Contact.html` to the backend's HTTPS URL, or update the default `API_BASE` in `frontend-integration/contact-form.js`. Configure `FRONTEND_ORIGINS` on the backend with the frontend's exact origin.
 
-## 4. Connect your existing portfolio
-
-1. Keep the existing portfolio frontend on GitHub Pages.
-2. In your `Contact.html`, ensure the form fields have the expected `name` attributes and `id="contact-form"`.
-3. Add `<p id="form-status" role="status" aria-live="polite"></p>` to show success/error feedback.
-4. Add the JavaScript file after the form.
-5. During local testing, use `http://127.0.0.1:8000` as `API_BASE`.
-6. After deploying the backend, change `API_BASE` to its HTTPS URL.
-
-## 5. Deployment reality check
+## 4. Deployment reality check
 
 GitHub Pages only hosts static HTML/CSS/JS. It does not run FastAPI. Deploy this backend folder to a Python-capable host and configure its `FRONTEND_ORIGINS` environment variable with the frontend origin, e.g. `https://murthy-bunny.github.io`.
 

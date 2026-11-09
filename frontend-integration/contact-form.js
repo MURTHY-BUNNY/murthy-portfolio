@@ -5,14 +5,14 @@ Integration helper for your existing Contact.html.
 3. Add <p id="form-status" role="status" aria-live="polite"></p> under the form.
 4. Change API_BASE to your deployed backend URL after hosting it.
 */
-const API_BASE = "http://127.0.0.1:8000";
-
 const contactForm = document.querySelector("#contact-form");
 const formStatus = document.querySelector("#form-status");
+const API_BASE = contactForm?.dataset.apiBase || "http://127.0.0.1:8000";
 
 if (contactForm) {
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const submitButton = contactForm.querySelector('button[type="submit"]');
 
     const formData = new FormData(contactForm);
     const payload = {
@@ -24,8 +24,8 @@ if (contactForm) {
 
     if (formStatus) {
       formStatus.textContent = "Sending message...";
-      formStatus.style.color = "";
     }
+    if (submitButton) submitButton.disabled = true;
 
     try {
       const response = await fetch(`${API_BASE}/api/contact`, {
@@ -44,15 +44,18 @@ if (contactForm) {
 
       if (formStatus) {
         formStatus.textContent = result.message;
-        formStatus.style.color = "green";
       }
       contactForm.reset();
     } catch (error) {
       if (formStatus) {
+        const message = error instanceof Error
+          ? error.message
+          : "Unable to send your message.";
         formStatus.textContent =
-          `${error.message} If developing locally, check that FastAPI is running.`;
-        formStatus.style.color = "crimson";
+          `${message} If developing locally, check that FastAPI is running.`;
       }
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
   });
 }
