@@ -7,12 +7,25 @@ Integration helper for your existing Contact.html.
 */
 const contactForm = document.querySelector("#contact-form");
 const formStatus = document.querySelector("#form-status");
-const API_BASE = contactForm?.dataset.apiBase || "http://127.0.0.1:8000";
+const isLocalDevelopment =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+const API_BASE =
+  contactForm?.dataset.apiBase?.trim() ||
+  (isLocalDevelopment ? "http://127.0.0.1:8000" : "");
 
 if (contactForm) {
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitButton = contactForm.querySelector('button[type="submit"]');
+
+    if (!API_BASE) {
+      if (formStatus) {
+        formStatus.textContent =
+          "The online message service is not configured yet. Please email kothagundlamurthy@gmail.com instead.";
+      }
+      return;
+    }
 
     const formData = new FormData(contactForm);
     const payload = {
@@ -51,8 +64,9 @@ if (contactForm) {
         const message = error instanceof Error
           ? error.message
           : "Unable to send your message.";
-        formStatus.textContent =
-          `${message} If developing locally, check that FastAPI is running.`;
+        formStatus.textContent = isLocalDevelopment
+          ? `${message} Check that FastAPI is running locally.`
+          : `${message} Please email kothagundlamurthy@gmail.com if the problem continues.`;
       }
     } finally {
       if (submitButton) submitButton.disabled = false;
