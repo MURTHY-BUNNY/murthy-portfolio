@@ -4,9 +4,13 @@ FastAPI + SQLite/PostgreSQL contact form API.
 Run from this folder: uvicorn main:app --reload
 """
 import os
+import logging
+import smtplib
 import sqlite3
+import ssl
 from contextlib import closing
 from datetime import datetime, timezone
+from email.message import EmailMessage
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -22,6 +26,7 @@ DB_PATH = Path(os.getenv("DATABASE_PATH", str(BASE_DIR / "portfolio.db")))
 DATABASE_URL = os.getenv("DATABASE_URL")
 USE_POSTGRES = bool(DATABASE_URL)
 DATABASE_ERRORS = (sqlite3.Error, psycopg.Error)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Murthy Portfolio API",
@@ -82,6 +87,47 @@ def initialize_database():
             """
         )
         conn.commit()
+
+
+def send_contact_notification(payload: "ContactMessage", message_id: int) -> bool:
+    smtp_username = os.getenv("SMTP_USERNAME")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    sender = os.getenv("MAIL_FROM")
+    recipient = os.getenv("MAIL_TO", "kothagundlamurthy@gmail.com")
+
+    if not all((smtp_username, smtp_password, sender, recipient)):
+        logger.warning("Contact message %s saved, but email is not configured.", message_id)
+        return False
+
+    try:
+        smtp_host = os.getenv("SMTP_HOST", "smtp-relay.brevo.com")
+        smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        email = EmailMessage()
+        email["Subject"] = f"New portfolio message #{message_id}"
+        email["From"] = sender
+        email["To"] = recipient
+        email["Reply-To"] = str(payload.email)
+        email.set_content(
+            "\n".join(
+                (
+                    f"Name: {payload.name}",
+                    f"Email: {payload.email}",
+                    f"Subject: {payload.subject}",
+                    "",
+                    payload.message,
+                )
+            )
+        )
+
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as smtp:
+            smtp.starttls(context=ssl.create_default_context())
+            smtp.login(smtp_username, smtp_password)
+            smtp.send_message(email)
+    except (OSError, smtplib.SMTPException, ValueError):
+        logger.exception("Email notification failed for contact message %s.", message_id)
+        return False
+
+    return True
 
 
 @app.on_event("startup")
@@ -150,8 +196,14 @@ def create_contact_message(payload: ContactMessage):
             detail="The message could not be saved. Please try again later.",
         ) from exc
 
+    email_sent = send_contact_notification(payload, message_id)
     return {
         "success": True,
-        "message": "Thank you! Your message has been received.",
+        "message": (
+            "Thank you! Your message has been received and an email notification was sent."
+            if email_sent
+            else "Your message was saved, but its email notification could not be sent. Please try again later."
+        ),
+        "email_sent": email_sent,
         "id": message_id,
     }

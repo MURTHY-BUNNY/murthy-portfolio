@@ -64,9 +64,22 @@ GitHub Pages hosts only the static HTML/CSS/JS frontend; it does not run FastAPI
 
 The deployment URL is not available until the Blueprint has been created in your Render account. Until the frontend is configured with that URL, the contact form will show the email fallback rather than claim a message was delivered.
 
+## 5. Email notifications
+
+The API saves submissions to PostgreSQL and can email a notification through Brevo SMTP. In Render, open the web service's **Environment** settings and add:
+
+- `SMTP_HOST` = `smtp-relay.brevo.com`
+- `SMTP_PORT` = `587`
+- `SMTP_USERNAME` = the SMTP login shown in Brevo
+- `SMTP_PASSWORD` = a Brevo SMTP key (not an API key)
+- `MAIL_FROM` = a sender address verified in Brevo
+- `MAIL_TO` = `kothagundlamurthy@gmail.com` (optional; this is the default recipient)
+
+Save the variables and redeploy the web service. Until SMTP credentials and a verified sender are configured, messages are still saved, but the API explicitly reports that email notification was not sent. Use Render's environment settings for credentials; never commit them to GitHub.
+
 ## Security notes
 
 - No public endpoint exposes stored messages.
-- This starter does not send email notifications; it saves submissions to SQLite.
+- Submissions are stored even if email delivery is unavailable.
 - Before public production use, add rate limiting, spam protection/CAPTCHA, monitoring, and a retention policy.
 - Never put passwords, API keys, or other secrets in frontend JavaScript.
